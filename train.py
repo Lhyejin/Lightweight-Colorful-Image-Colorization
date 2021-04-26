@@ -28,7 +28,7 @@ if __name__ == '__main__':
     os.makedirs(checkpoint_models_path, exist_ok=True)
     print(checkpoint_models_path)
     # Callbacks
-    tensor_board = keras.callbacks.TensorBoard(log_dir='./logs/%s'args["model"], histogram_freq=0, write_graph=True, write_images=True)
+    tensor_board = keras.callbacks.TensorBoard(log_dir='./logs/%s'%args["model"], histogram_freq=0, write_graph=True, write_images=True)
     model_names = checkpoint_models_path + 'model.{epoch:02d}-{val_loss:.4f}.hdf5'
     model_checkpoint = ModelCheckpoint(model_names, monitor='val_loss', verbose=1, period=50)
 #     early_stop = EarlyStopping('val_loss', patience=patience)
