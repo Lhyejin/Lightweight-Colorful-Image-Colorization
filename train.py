@@ -24,7 +24,7 @@ if __name__ == '__main__':
     pretrained_path = args["pretrained"]
     os.environ["CUDA_VISIBLE_DEVICES"] = args["gpu"]
 
-    checkpoint_models_path = 'models/%s'%arg["model"]
+    checkpoint_models_path = 'models/%s'%args["model"]
     os.makedirs(checkpoint_models_path, exist_ok=True)
     print(checkpoint_models_path)
     # Callbacks
@@ -62,7 +62,9 @@ if __name__ == '__main__':
         # rewrite the callback: saving through the original model and not the multi-gpu model.
         model_checkpoint = MyCbk(model)
     else:
-        new_model = build_model()
+        new_model = model.build_model()
+        if args["model"] != "original":
+            new_model = separable_model.build_model()
         if pretrained_path is not None:
             new_model.load_weights(pretrained_path)
             
