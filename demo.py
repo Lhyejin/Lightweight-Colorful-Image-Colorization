@@ -1,7 +1,7 @@
 # import the necessary packages
 import os
 import random
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
 import cv2 as cv
 import keras.backend as K
@@ -10,7 +10,8 @@ import sklearn.neighbors as nn
 
 from config import img_rows, img_cols
 from config import nb_neighbors, T, epsilon
-from model import build_model
+import model
+import separable_model
 import argparse
 
 # +
@@ -25,7 +26,10 @@ if __name__ == '__main__':
     channel = 3
     
     model_weights_path = args.model_path
-    model = build_model()
+    model = model.build_model()
+    if args.model_type != "original":
+        model = separable_model.build_model()
+
     model.load_weights(model_weights_path)
 
 #     print(model.summary())
@@ -34,7 +38,8 @@ if __name__ == '__main__':
     names_file = args.name_path
     with open(names_file, 'r') as f:
         names = f.read().splitlines()
-
+        
+    samples = random.sample(names, 500)
 
     h, w = img_rows // 4, img_cols // 4
 
@@ -45,7 +50,7 @@ if __name__ == '__main__':
     # Fit a NN to q_ab
     nn_finder = nn.NearestNeighbors(n_neighbors=nb_neighbors, algorithm='ball_tree').fit(q_ab)
 
-    for i in range(len(names)):
+    for i in range(len(samples)):
         image_name = names[i]
         filename = os.path.join(image_folder, image_name)
         print('Start processing image: {}'.format(filename))
