@@ -17,26 +17,24 @@ import argparse
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_path", default='', type=str)
-    parser.add_argument("--source", type=str)
-    parser.add_argument("--domain", default='photo', type=str)
+    parser.add_argument("--model-type", default='original', type=str)
+    parser.add_argument("--testset-path", default='./VOC2012/testset', type=str)
+    parser.add_argument("--name-path", default='./VOC2012/test_names.txt', type=str)
     args = parser.parse_args()
     print(args)
     channel = 3
     
     model_weights_path = args.model_path
-    domain = args.domain
-    source = args.source
     model = build_model()
     model.load_weights(model_weights_path)
 
 #     print(model.summary())
 
-    image_folder = './pacs_data'
-    names_file = 'pacs_data/pacs_data_with_test/%s_test_names.txt'%domain
+    image_folder = args.testset_path
+    names_file = args.name_path
     with open(names_file, 'r') as f:
         names = f.read().splitlines()
 
-    samples = random.sample(names, 10)
 
     h, w = img_rows // 4, img_cols // 4
 
@@ -120,11 +118,11 @@ if __name__ == '__main__':
         out_bgr = out_bgr.astype(np.uint8)
 
         
-        os.makedirs('images/gray/%s2%s'%(source, domain), exist_ok=True)
-        os.makedirs('images/gt/%s2%s'%(source, domain), exist_ok=True)
-        os.makedirs('images/colorized/%s2%s'%(source, domain), exist_ok=True)
-        cv.imwrite('images/gray/{}2{}/{}_image.png'.format(source, domain, i), gray)
-        cv.imwrite('images/gt/{}2{}/{}.png'.format(source, domain, i), bgr)
-        cv.imwrite('images/colorized/{}2{}/{}.png'.format(source, domain, i), out_bgr)
+        os.makedirs('images/gray/%s'%(args.model_type), exist_ok=True)
+        os.makedirs('images/gt/%s'%(args.model_type), exist_ok=True)
+        os.makedirs('images/colorized/%s'%(args.model_type), exist_ok=True)
+        cv.imwrite('images/gray/{}/{}.png'.format(args.model_type, i), gray)
+        cv.imwrite('images/gt/{}/{}.png'.format(args.model_type, i), bgr)
+        cv.imwrite('images/colorized/{}/{}.png'.format(args.model_type, i), out_bgr)
 
     K.clear_session()
