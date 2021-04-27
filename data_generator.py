@@ -85,7 +85,10 @@ class DataGenSequence(Sequence):
             # b: 0 <=b<=255, g: 0 <=g<=255, r: 0 <=r<=255.
             bgr = cv.imread(filename)
             # bgr = cv.resize(bgr, (img_rows, img_cols), cv.INTER_CUBIC)
-            gray = cv.imread(filename, 0)
+            # like infrared 
+            gray = bgr[:, :, :2] * 0
+            gray = cv.cvtColor(bgr, cv.COLOR_BGR2Lab)
+            gray = gray[:,:, 0]
             # gray = cv.resize(gray, (img_rows, img_cols), cv.INTER_CUBIC)
             lab = cv.cvtColor(bgr, cv.COLOR_BGR2LAB)
             x = gray / 255.
