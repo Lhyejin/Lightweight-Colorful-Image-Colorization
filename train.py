@@ -8,6 +8,7 @@ from keras.utils import multi_gpu_model
 from config import patience, epochs, num_train_samples, num_valid_samples, batch_size
 from data_generator import train_gen, valid_gen
 import separable_model
+import half_separable_model
 import model
 from utils import get_available_gpus, categorical_crossentropy_color
 
@@ -19,7 +20,7 @@ if __name__ == '__main__':
     ap.add_argument("--image-dir", type=str)
     ap.add_argument("--gpu", default='0', type=str)
     ap.add_argument("--epoch", default=100, type=int)
-    ap.add_argument("--model", default='original', type=str)
+    ap.add_argument("--model", default='original', type=str, help="original, separable, half")
     args = vars(ap.parse_args())
     pretrained_path = args["pretrained"]
     os.environ["CUDA_VISIBLE_DEVICES"] = args["gpu"]
@@ -30,7 +31,7 @@ if __name__ == '__main__':
     # Callbacks
     tensor_board = keras.callbacks.TensorBoard(log_dir='./logs/%s'%args["model"], histogram_freq=0, write_graph=True, write_images=True)
     model_names = os.path.join(checkpoint_models_path, 'model.{epoch:02d}-{val_loss:.4f}.hdf5')
-    model_checkpoint = ModelCheckpoint(model_names, monitor='val_loss', verbose=1, period=25)
+    model_checkpoint = ModelCheckpoint(model_names, monitor='val_loss', verbose=1, period=10)
 #     early_stop = EarlyStopping('val_loss', patience=patience)
     reduce_lr = ReduceLROnPlateau('val_loss', factor=0.02, patience=int(patience / 4), verbose=1)
 
@@ -51,8 +52,10 @@ if __name__ == '__main__':
     if num_gpu >= 2:
         with tf.device("/cpu:0"):
             model = model.build_model()
-            if args["model"] != "original":
+            if args["model"] == "separable":
                 model = separable_model.build_model()
+            elif args["model"] == "half":
+                model = half_separable_model.build_model()
             if pretrained_path is not None:
                 model.load_weights(pretrained_path)
                 
@@ -63,8 +66,10 @@ if __name__ == '__main__':
         model_checkpoint = MyCbk(model)
     else:
         new_model = model.build_model()
-        if args["model"] != "original":
+        if args["model"] == "separable":
             new_model = separable_model.build_model()
+        elif args["model"] == "half":
+            new_model = half_separable_model.build_model()
         if pretrained_path is not None:
             new_model.load_weights(pretrained_path)
             
@@ -73,7 +78,7 @@ if __name__ == '__main__':
             
     sgd = keras.optimizers.SGD(lr=0.001, momentum=0.9, nesterov=True, clipnorm=5.)
     adam = keras.optimizers.Adam(lr=3e-5, beta_1=0.9, beta_2=0.999, decay=0.001)
-    new_model.compile(optimizer=adam, loss='categorical_crossentropy')
+    new_model.compile(optimizer=sgd, loss="categorical_crossentropy")
     
     print(new_model.summary())
 

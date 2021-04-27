@@ -14,7 +14,7 @@ l2_reg = l2(1e-3)
 def build_model():
     input_tensor = Input(shape=(img_rows, img_cols, 1))
     x = Conv2D(64, (kernel, kernel), activation='relu', padding='same', name='conv1_1', kernel_initializer="he_normal",
-           kernel_regularizer=l2_reg)(input_tensor
+           kernel_regularizer=l2_reg)(input_tensor)
     x = SeparableConv2D(64, (kernel, kernel), activation='relu', padding='same', name='conv1_2', depthwise_initializer="he_normal", pointwise_initializer="he_normal",
                depthwise_regularizer=l2_reg, pointwise_regularizer=l2_reg, strides=(2, 2))(x)
     x = BatchNormalization()(x)
@@ -44,6 +44,7 @@ def build_model():
 
     x = Conv2D(512, (kernel, kernel), activation='relu', padding='same', dilation_rate=2, name='conv5_1',
                kernel_initializer="he_normal", kernel_regularizer=l2_reg)(x)
+    x = SeparableConv2D(512, (kernel, kernel), activation='relu', padding='same', dilation_rate=2, name='conv5_2',
                depthwise_initializer="he_normal", pointwise_initializer="he_normal", depthwise_regularizer=l2_reg, pointwise_regularizer=l2_reg)(x)
     x = SeparableConv2D(512, (kernel, kernel), activation='relu', padding='same', dilation_rate=2, name='conv5_3',
                depthwise_initializer="he_normal", pointwise_initializer="he_normal", depthwise_regularizer=l2_reg, pointwise_regularizer=l2_reg)(x)
