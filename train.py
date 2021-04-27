@@ -29,8 +29,8 @@ if __name__ == '__main__':
     print(checkpoint_models_path)
     # Callbacks
     tensor_board = keras.callbacks.TensorBoard(log_dir='./logs/%s'%args["model"], histogram_freq=0, write_graph=True, write_images=True)
-    model_names = checkpoint_models_path + 'model.{epoch:02d}-{val_loss:.4f}.hdf5'
-    model_checkpoint = ModelCheckpoint(model_names, monitor='val_loss', verbose=1, period=50)
+    model_names = os.path.join(checkpoint_models_path, 'model.{epoch:02d}-{val_loss:.4f}.hdf5')
+    model_checkpoint = ModelCheckpoint(model_names, monitor='val_loss', verbose=1, period=25)
 #     early_stop = EarlyStopping('val_loss', patience=patience)
     reduce_lr = ReduceLROnPlateau('val_loss', factor=0.02, patience=int(patience / 4), verbose=1)
 
@@ -73,7 +73,7 @@ if __name__ == '__main__':
             
     sgd = keras.optimizers.SGD(lr=0.001, momentum=0.9, nesterov=True, clipnorm=5.)
     adam = keras.optimizers.Adam(lr=3e-5, beta_1=0.9, beta_2=0.999, decay=0.001)
-    new_model.compile(optimizer=sgd, loss='categorical_crossentropy')
+    new_model.compile(optimizer=adam, loss='categorical_crossentropy')
     
     print(new_model.summary())
 
