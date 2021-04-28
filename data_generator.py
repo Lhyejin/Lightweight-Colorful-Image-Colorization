@@ -86,7 +86,8 @@ class DataGenSequence(Sequence):
             bgr = cv.imread(filename)
             # bgr = cv.resize(bgr, (img_rows, img_cols), cv.INTER_CUBIC)
             # like infrared 
-            gray = bgr[:, :, :2] * 0
+            gray = np.copy(bgr)
+            gray[:, :, :2] = bgr[:, :, :2] * 0
             gray = cv.cvtColor(gray, cv.COLOR_BGR2Lab)
             gray = gray[:,:, 0]
             # gray = cv.resize(gray, (img_rows, img_cols), cv.INTER_CUBIC)

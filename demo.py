@@ -60,7 +60,8 @@ if __name__ == '__main__':
         # b: 0 <=b<=255, g: 0 <=g<=255, r: 0 <=r<=255.
         bgr = cv.imread(filename)
         # like infrared
-        gray = bgr[:, :, :2] * 0
+        gray = np.copy(bgr)
+        gray[:, :, :2] = bgr[:, :, :2] * 0
         gray = cv.cvtColor(gray, cv.COLOR_BGR2Lab)
         gray = gray[:,:, 0]
         bgr = cv.resize(bgr, (img_rows, img_cols), cv.INTER_CUBIC)
