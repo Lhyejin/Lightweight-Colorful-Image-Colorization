@@ -42,7 +42,7 @@ if __name__ == '__main__':
     with open(names_file, 'r') as f:
         names = f.read().splitlines()
         
-    samples = random.sample(names, 500)
+    samples = random.sample(names, 20)
 
     h, w = img_rows // 4, img_cols // 4
 
@@ -61,7 +61,7 @@ if __name__ == '__main__':
         bgr = cv.imread(filename)
         # like infrared
         gray = bgr[:, :, :2] * 0
-        gray = cv.cvtColor(bgr, cv.COLOR_BGR2Lab)
+        gray = cv.cvtColor(gray, cv.COLOR_BGR2Lab)
         gray = gray[:,:, 0]
         bgr = cv.resize(bgr, (img_rows, img_cols), cv.INTER_CUBIC)
         gray = cv.resize(gray, (img_rows, img_cols), cv.INTER_CUBIC)
