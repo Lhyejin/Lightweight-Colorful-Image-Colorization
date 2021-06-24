@@ -12,14 +12,13 @@ from config import img_rows, img_cols
 from config import nb_neighbors, T, epsilon
 import model
 import separable_model
-import half_separable_model
 import argparse
 
 # +
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_path", default='', type=str)
-    parser.add_argument("--model-type", default='original', type=str, help="original, separable, half")
+    parser.add_argument("--model-type", default='original', type=str, help="original, separable")
     parser.add_argument("--testset-path", default='./VOC2012/testset', type=str)
     parser.add_argument("--name-path", default='./VOC2012/test_names.txt', type=str)
     args = parser.parse_args()
@@ -30,8 +29,6 @@ if __name__ == '__main__':
     model = model.build_model()
     if args.model_type == "separable":
         model = separable_model.build_model()
-    elif args.model_type == "half":
-        model = half_separable_mode.build_model()
 
     model.load_weights(model_weights_path)
 

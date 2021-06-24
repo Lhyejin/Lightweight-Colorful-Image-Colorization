@@ -10,8 +10,7 @@ from keras.utils import Sequence
 
 from config import batch_size, img_rows, img_cols, nb_neighbors
 
-#image_folder = '/mnt/code/ImageNet-Downloader/image/resized'
-pacs_dir = './pacs_data'
+
 
 def get_soft_encoding(image_ab, nn_finder, nb_q):
     h, w = image_ab.shape[:2]
